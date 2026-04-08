@@ -25,9 +25,6 @@ You can run this study directly in your browser using Google Colab:
 1. Click the **"Open In Colab"** button above.
 2. Ensure the Runtime Type is set to **GPU (T4 or higher)**.
 3. Run the cells sequentially. The environment setup (Section 0) will automatically install necessary dependencies:
-   ```bash
-   pip install unigaze face-alignment timm
----
 
 ##  Critical Experimental Insights
 
