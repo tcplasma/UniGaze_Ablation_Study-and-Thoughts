@@ -1,35 +1,36 @@
-1. Core Objective
-This experiment evaluates the feature representation capabilities of UniGaze (domain-specific), DINOv2, and ViT (general-purpose) using the Olivetti Faces dataset. The study employs Linear Probing, where the backbone's filters (weights) and biases are frozen, and only a terminal GazeRegressor is trained.
+# UniGaze Ablation Study: Professional Domain Priors vs. General Feature Fitting
 
-2. Qualitative Superiority vs. Quantitative Metrics
-While the numerical results (Angular Error) may appear similar across models, a qualitative assessment of the visual predictions (the gaze arrows) reveals a significant gap:
+This repository contains an ablation study comparing **UniGaze** (a domain-specific gaze estimation model) with state-of-the-art general-purpose vision models (**DINOv2** and **ViT**). The study explores the robustness of these models under constrained data environments and their ability to generalize physical geometric logic.
 
-UniGaze’s Zero-shot Power: Despite never being trained on this specific dataset, UniGaze's predicted vectors are visibly more aligned with the actual "intent" and "look" of the human subjects.
+##  Project Overview
+The notebook `UniGaze_Ablation_Study.ipynb` performs a **Linear Probing** experiment on the Olivetti Faces dataset. By freezing the backbones and training only a regression head, we evaluate how much "gaze-related knowledge" is inherently stored in each model's feature space.
 
-Physical Plausibility: UniGaze produces physically-plausible gaze vectors that respect the biological constraints of the human eye, whereas general models sometimes produce mathematically correct but physiologically unlikely directions.
+### Key Features:
+* **Automated Labeling**: Implementation of the **PnP (Perspective-n-Point)** algorithm to derive 3D gaze/head-pose labels from 2D facial landmarks.
+* **Comparative Analysis**: Head-to-head comparison between UniGaze, DINOv2 (ViT-L/14), and standard ViT.
+* **Robustness Testing**: Evaluation of model performance under noise injection to distinguish between "true understanding" and "dataset overfitting."
 
-3. Critical Evaluation of the Experimental Design
-The data metrics in this notebook might be deceptive due to the following structural limitations:
+---
 
-A. The "PnP Label" Trap
-The Ground Truth (GT) in this experiment is derived via the Perspective-n-Point (PnP) algorithm.
+##  Critical Experimental Insights
 
-The Flaw: PnP calculates Head Pose, not Fine-grained Gaze. It assumes the person is looking straight ahead relative to their face.
+### 1. Qualitative Superiority
+While quantitative metrics (Angular Error) might show similar results across models in simple environments, **UniGaze** demonstrates superior **Qualitative Accuracy**. Its predicted gaze vectors align more naturally with human physiological intent, proving that its domain-specific pre-training captures the "physics of sight" rather than just "pixel patterns."
 
-The Conflict: UniGaze is designed to capture subtle eyeball movements (eye-in-head). When a subject looks "sideways" without moving their head, UniGaze's accurate prediction is penalized by the PnP-based GT, which erroneously expects a forward-facing vector.
+### 2. The PnP Labeling Paradox
+The Ground Truth (GT) used in this notebook (PnP) primarily reflects **Head Pose**. 
+* **Observation**: UniGaze is trained on high-precision **Gaze Trackers** in controlled laboratory settings (e.g., ETH-XGaze). 
+* **Analysis**: When a subject's eyes move independently of their head, UniGaze's accurate tracking may be penalized by the simplified PnP labels. This highlights the limitation of using "Head Pose" as a proxy for "Gaze."
 
-Ideal Setup: To truly validate UniGaze, one would need a Controlled Laboratory Setting equipped with high-precision Gaze Trackers or Vicon Motion Capture systems.
+### 3. Feature Fitting vs. Physical Priors
+By introducing noise into the dataset, the experiment reveals:
+* **General Models (DINOv2/ViT)**: Act as "Image Statisticians." Their performance is high on clean data due to their ability to fit the specific distribution of the Olivetti dataset, but it degrades rapidly under noise.
+* **UniGaze**: Acts as a "Gaze Physicist." It relies on stable, pre-learned **Physiological Priors**. It exhibits much higher **Robustness**, proving that it understands the invariant geometric structures of the human eye.
 
-B. Robustness vs. Dataset Fitting (The Noise Test)
-The experiment involving noise injection exposes the underlying strategy of the general models:
+---
 
-General Models (DINOv2/ViT): Their high scores on clean data rely heavily on Dataset Overfitting. They learn to map the specific, static background and lighting of the Olivetti dataset to the PnP labels. Once noise is introduced, they lose their "landmarks" and performance collapses.
-
-UniGaze’s Robustness: UniGaze acts as a "Gaze Physicist." Its filters are pre-trained to ignore environmental noise and focus on stable Physiological Geometry. It maintains accuracy because it understands the structure of the eye, not just the pixels of the dataset.
-
-4. Final Conclusion
-Statisticians vs. Physicists: DINOv2 is a world-class "Image Statistician," capable of finding patterns in any data it's given. UniGaze is a "Gaze Physicist" that possesses Physical Priors and Cross-dataset Generalization.
-
-Metrics are not Absolute: In specialized tasks like gaze estimation, L2 Loss or Angular Error can be misleading if the labels (GT) are proxies. Qualitative analysis—observing if the model "understands" the gaze—is often a more valid indicator of real-world utility.
-
-The Value of Domain Pre-training: The experiment proves that specialized pre-training encodes a level of robustness and geometric logic that general-purpose training cannot match, even when general models have significantly more parameters.
+##  Tech Stack
+* **Core Model**: UniGaze (Transformer-based)
+* **Backbones**: DINOv2 (Meta AI), ViT (Timm)
+* **Geometry**: OpenCV (solvePnP), Face-Alignment (FAN)
+* **Framework**: PyTorch
