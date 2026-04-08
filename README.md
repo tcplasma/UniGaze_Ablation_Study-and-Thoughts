@@ -9,7 +9,24 @@ The notebook `UniGaze_Ablation_Study.ipynb` performs a **Linear Probing** experi
 * **Automated Labeling**: Implementation of the **PnP (Perspective-n-Point)** algorithm to derive 3D gaze/head-pose labels from 2D facial landmarks.
 * **Comparative Analysis**: Head-to-head comparison between UniGaze, DINOv2 (ViT-L/14), and standard ViT.
 * **Robustness Testing**: Evaluation of model performance under noise injection to distinguish between "true understanding" and "dataset overfitting."
+# UniGaze Ablation Study: Professional Domain Priors vs. General Feature Fitting
 
+This repository contains an ablation study comparing **UniGaze** (a domain-specific gaze estimation model) with state-of-the-art general-purpose vision models (**DINOv2** and **ViT**). The study explores the robustness of these models under constrained data environments and their ability to generalize physical geometric logic.
+
+---
+
+##  How to Run
+
+You can run this study directly in your browser using Google Colab:
+
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/tcplasma/UniGaze_Ablation_Study-and-Thoughts/blob/main/UniGaze_Ablation_Study_.ipynb)
+
+### Instructions:
+1. Click the **"Open In Colab"** button above.
+2. Ensure the Runtime Type is set to **GPU (T4 or higher)**.
+3. Run the cells sequentially. The environment setup (Section 0) will automatically install necessary dependencies:
+   ```bash
+   pip install unigaze face-alignment timm
 ---
 
 ##  Critical Experimental Insights
